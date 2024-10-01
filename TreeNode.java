@@ -39,6 +39,10 @@ class TreeNode {
 		children.add(child);
 	}
 
+	public void setToken(Token token) {
+    	this.token = Optional.of(token);
+	}
+
 	public Optional<Token> getToken() {
 		return this.token;
 	}
