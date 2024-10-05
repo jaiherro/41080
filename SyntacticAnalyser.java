@@ -113,21 +113,14 @@ public class SyntacticAnalyser {
                 Token.TokenType.RBRACE
         ));
 
-        // Productions for LOS
-        // First set for LOS: { WHILE, FOR, IF, ID, TYPE, PRINT, SEMICOLON }
-        List<Token.TokenType> losFirstSet = Arrays.asList(
-                Token.TokenType.WHILE,
-                Token.TokenType.FOR,
-                Token.TokenType.IF,
-                Token.TokenType.ID,
-                Token.TokenType.TYPE,
-                Token.TokenType.PRINT,
-                Token.TokenType.SEMICOLON
-        );
-
-        for (Token.TokenType tt : losFirstSet) {
-            parsingTable.put(new Pair<>(TreeNode.Label.los, tt), Arrays.asList(TreeNode.Label.stat, TreeNode.Label.los));
-        }
+        // Productions for LOS - without the loop
+        parsingTable.put(new Pair<>(TreeNode.Label.los, Token.TokenType.WHILE), Arrays.asList(TreeNode.Label.stat, TreeNode.Label.los));
+        parsingTable.put(new Pair<>(TreeNode.Label.los, Token.TokenType.FOR), Arrays.asList(TreeNode.Label.stat, TreeNode.Label.los));
+        parsingTable.put(new Pair<>(TreeNode.Label.los, Token.TokenType.IF), Arrays.asList(TreeNode.Label.stat, TreeNode.Label.los));
+        parsingTable.put(new Pair<>(TreeNode.Label.los, Token.TokenType.ID), Arrays.asList(TreeNode.Label.stat, TreeNode.Label.los));
+        parsingTable.put(new Pair<>(TreeNode.Label.los, Token.TokenType.TYPE), Arrays.asList(TreeNode.Label.stat, TreeNode.Label.los));
+        parsingTable.put(new Pair<>(TreeNode.Label.los, Token.TokenType.PRINT), Arrays.asList(TreeNode.Label.stat, TreeNode.Label.los));
+        parsingTable.put(new Pair<>(TreeNode.Label.los, Token.TokenType.SEMICOLON), Arrays.asList(TreeNode.Label.stat, TreeNode.Label.los));
 
         // Follow set for LOS: { RBRACE }
         parsingTable.put(new Pair<>(TreeNode.Label.los, Token.TokenType.RBRACE), Arrays.asList(TreeNode.Label.epsilon));
@@ -273,14 +266,12 @@ public class SyntacticAnalyser {
         parsingTable.put(new Pair<>(TreeNode.Label.expr, Token.TokenType.FALSE), Arrays.asList(TreeNode.Label.relexpr, TreeNode.Label.boolexpr));
         parsingTable.put(new Pair<>(TreeNode.Label.expr, Token.TokenType.SQUOTE), Arrays.asList(TreeNode.Label.charexpr));
 
-
         // CHAR_EXPR -> ' CHAR '
         parsingTable.put(new Pair<>(TreeNode.Label.charexpr, Token.TokenType.SQUOTE), Arrays.asList(
                 Token.TokenType.SQUOTE,
                 Token.TokenType.CHARLIT,
                 Token.TokenType.SQUOTE
         ));
-
 
         // BOOL_EXPR -> BOOL_OP REL_EXPR BOOL_EXPR | epsilon
         parsingTable.put(new Pair<>(TreeNode.Label.boolexpr, Token.TokenType.EQUAL), Arrays.asList(TreeNode.Label.boolop, TreeNode.Label.relexpr, TreeNode.Label.boolexpr));
@@ -289,7 +280,6 @@ public class SyntacticAnalyser {
         parsingTable.put(new Pair<>(TreeNode.Label.boolexpr, Token.TokenType.OR), Arrays.asList(TreeNode.Label.boolop, TreeNode.Label.relexpr, TreeNode.Label.boolexpr));
         parsingTable.put(new Pair<>(TreeNode.Label.boolexpr, Token.TokenType.SEMICOLON), Arrays.asList(TreeNode.Label.epsilon));
         parsingTable.put(new Pair<>(TreeNode.Label.boolexpr, Token.TokenType.RPAREN), Arrays.asList(TreeNode.Label.epsilon));
-
 
         // BOOL_OP -> BOOL_EQ | BOOL_LOG
         parsingTable.put(new Pair<>(TreeNode.Label.boolop, Token.TokenType.EQUAL), Arrays.asList(TreeNode.Label.booleq));
@@ -301,12 +291,9 @@ public class SyntacticAnalyser {
         parsingTable.put(new Pair<>(TreeNode.Label.booleq, Token.TokenType.EQUAL), Arrays.asList(Token.TokenType.EQUAL));
         parsingTable.put(new Pair<>(TreeNode.Label.booleq, Token.TokenType.NEQUAL), Arrays.asList(Token.TokenType.NEQUAL));
 
-
         // BOOL_LOG -> && | ||
         parsingTable.put(new Pair<>(TreeNode.Label.boollog, Token.TokenType.AND), Arrays.asList(Token.TokenType.AND));
         parsingTable.put(new Pair<>(TreeNode.Label.boollog, Token.TokenType.OR), Arrays.asList(Token.TokenType.OR));
-
-
 
         // REL_EXPR -> ARITH_EXPR REL_EXPR' | TRUE | FALSE
         parsingTable.put(new Pair<>(TreeNode.Label.relexpr, Token.TokenType.LPAREN), Arrays.asList(TreeNode.Label.arithexpr, TreeNode.Label.relexprprime));
@@ -314,8 +301,6 @@ public class SyntacticAnalyser {
         parsingTable.put(new Pair<>(TreeNode.Label.relexpr, Token.TokenType.NUM), Arrays.asList(TreeNode.Label.arithexpr, TreeNode.Label.relexprprime));
         parsingTable.put(new Pair<>(TreeNode.Label.relexpr, Token.TokenType.TRUE), Arrays.asList(Token.TokenType.TRUE));
         parsingTable.put(new Pair<>(TreeNode.Label.relexpr, Token.TokenType.FALSE), Arrays.asList(Token.TokenType.FALSE));
-
-
 
         // REL_EXPR' -> REL_OP ARITH_EXPR | epsilon
         parsingTable.put(new Pair<>(TreeNode.Label.relexprprime, Token.TokenType.LT), Arrays.asList(TreeNode.Label.relop, TreeNode.Label.arithexpr));
@@ -335,12 +320,10 @@ public class SyntacticAnalyser {
         parsingTable.put(new Pair<>(TreeNode.Label.relop, Token.TokenType.GT), Arrays.asList(Token.TokenType.GT));
         parsingTable.put(new Pair<>(TreeNode.Label.relop, Token.TokenType.GE), Arrays.asList(Token.TokenType.GE));
 
-
         // ARITH_EXPR -> TERM ARITH_EXPR'
         parsingTable.put(new Pair<>(TreeNode.Label.arithexpr, Token.TokenType.LPAREN), Arrays.asList(TreeNode.Label.term, TreeNode.Label.arithexprprime));
         parsingTable.put(new Pair<>(TreeNode.Label.arithexpr, Token.TokenType.ID), Arrays.asList(TreeNode.Label.term, TreeNode.Label.arithexprprime));
         parsingTable.put(new Pair<>(TreeNode.Label.arithexpr, Token.TokenType.NUM), Arrays.asList(TreeNode.Label.term, TreeNode.Label.arithexprprime));
-
 
         // ARITH_EXPR' -> + TERM ARITH_EXPR' | - TERM ARITH_EXPR' | epsilon
         parsingTable.put(new Pair<>(TreeNode.Label.arithexprprime, Token.TokenType.PLUS), Arrays.asList(Token.TokenType.PLUS, TreeNode.Label.term, TreeNode.Label.arithexprprime));
@@ -361,7 +344,6 @@ public class SyntacticAnalyser {
         parsingTable.put(new Pair<>(TreeNode.Label.term, Token.TokenType.ID), Arrays.asList(TreeNode.Label.factor, TreeNode.Label.termprime));
         parsingTable.put(new Pair<>(TreeNode.Label.term, Token.TokenType.NUM), Arrays.asList(TreeNode.Label.factor, TreeNode.Label.termprime));
 
-
         // TERM' -> * FACTOR TERM' | / FACTOR TERM' | % FACTOR TERM' | epsilon
         parsingTable.put(new Pair<>(TreeNode.Label.termprime, Token.TokenType.TIMES), Arrays.asList(Token.TokenType.TIMES, TreeNode.Label.factor, TreeNode.Label.termprime));
         parsingTable.put(new Pair<>(TreeNode.Label.termprime, Token.TokenType.DIVIDE), Arrays.asList(Token.TokenType.DIVIDE, TreeNode.Label.factor, TreeNode.Label.termprime));
@@ -380,8 +362,6 @@ public class SyntacticAnalyser {
         parsingTable.put(new Pair<>(TreeNode.Label.termprime, Token.TokenType.AND), Arrays.asList(TreeNode.Label.epsilon));
         parsingTable.put(new Pair<>(TreeNode.Label.termprime, Token.TokenType.OR), Arrays.asList(TreeNode.Label.epsilon));
 
-
-
         // FACTOR -> ( ARITH_EXPR ) | ID | NUM
         parsingTable.put(new Pair<>(TreeNode.Label.factor, Token.TokenType.LPAREN), Arrays.asList(
                 Token.TokenType.LPAREN,
@@ -391,8 +371,6 @@ public class SyntacticAnalyser {
 
         parsingTable.put(new Pair<>(TreeNode.Label.factor, Token.TokenType.ID), Arrays.asList(Token.TokenType.ID));
         parsingTable.put(new Pair<>(TreeNode.Label.factor, Token.TokenType.NUM), Arrays.asList(Token.TokenType.NUM));
-
-
 
         // PRINT_EXPR -> REL_EXPR BOOL_EXPR | " STRINGLIT "
         parsingTable.put(new Pair<>(TreeNode.Label.printexpr, Token.TokenType.LPAREN), Arrays.asList(TreeNode.Label.relexpr, TreeNode.Label.boolexpr));
