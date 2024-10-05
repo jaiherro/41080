@@ -5,7 +5,7 @@ public class SyntacticAnalyser {
     private static Map<Pair<Symbol, Token.TokenType>, List<Symbol>> parsingTable = new HashMap<>();
 
     static {
-        initializeParsingTable();
+        initialiseParsingTable();
     }
 
     public static ParseTree parse(List<Token> tokens) throws SyntaxException {
@@ -13,7 +13,7 @@ public class SyntacticAnalyser {
         List<Token> inputTokens = new ArrayList<>(tokens);
         inputTokens.add(new Token(Token.TokenType.EOF));  // Assuming EOF is defined in TokenType
 
-        // Initialize stack with start symbol and root TreeNode
+        // Initialise stack with start symbol and root TreeNode
         Deque<Pair<Symbol, TreeNode>> stack = new ArrayDeque<>();
 
         // Create the root TreeNode
@@ -90,8 +90,8 @@ public class SyntacticAnalyser {
         return new ParseTree(root);
     }
 
-    private static void initializeParsingTable() {
-        // Initialize the parsing table entries based on the provided parsing table
+    private static void initialiseParsingTable() {
+        // Initialise the parsing table entries based on the provided parsing table
 
         // Production 1: PROG -> public class ID { public static void main ( String[] args ) { LOS } }
         parsingTable.put(new Pair<>(TreeNode.Label.prog, Token.TokenType.PUBLIC), Arrays.asList(
