@@ -69,4 +69,4 @@ The parser supports a subset of Java with the following restrictions:
 
 ## License
 
-This project is part of academic coursework and is subject to university policies regarding academic work.
+This project is part of academic coursework and is subject to UTS policies regarding academic work.
